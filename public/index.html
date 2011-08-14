@@ -1,8 +1,49 @@
 <html>
 <head>
     <title>Welcome!</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io.connect();
+
+        $(function(){
+            $("#create-account").click(function(){
+                socket.emit('create-account', {email: $("#email").val(), password: $('#password').val()});
+            });
+
+            $('#login').click(function(){
+                socket.emit('login', {email: $("#login-email").val(), password: $('#login-password').val()});
+            });
+        });
+
+        socket.on("has-account", function(data){
+           alert('you have an account');
+        });
+
+        socket.on("account-created", function(data){
+            alert("account created");
+        });
+
+        socket.on('login-success', function(data){
+            alert("logged in as " + data.email);
+        });
+
+        socket.on('login-failure', function(data){
+            alert('login failed for ' + data.email);
+        });
+    </script>
 </head>
 <body>
-<h1>Test...</h1>
+<h2>Create Account</h2>
+<p>Email: <input type="text" id="email" /></p>
+<p>Password: <input type="text" id="password" /></p>
+<button id="create-account">Create Account</button>
+
+
+<h2>Log In</h2>
+<p>Email: <input type="text" id="login-email" /></p>
+<p>Password: <input type="text" id="login-password" /></p>
+<button id="login">Log In</button>
+
 </body>
 </html>
