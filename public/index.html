@@ -7,29 +7,45 @@
         var socket = io.connect();
 
         $(function(){
-            $("#create-account").click(function(){
-                socket.emit('create-account', {email: $("#email").val(), password: $('#password').val()});
+            $('#create-account').click(function(){
+                socket.emit('create-account', {email: $('#email').val(), password: $('#password').val()});
             });
 
             $('#login').click(function(){
-                socket.emit('login', {email: $("#login-email").val(), password: $('#login-password').val()});
+                socket.emit('login', {email: $('#login-email').val(), password: $('#login-password').val()});
+            });
+
+            $('#submit-link').click(function(){
+                socket.emit('submit-link', {href: $('#link-href').val(), title: $('#link-title').val()});
+            });
+
+            $('#get-latest-links').click(function(){
+               socket.emit('get-latest-links', {});
             });
         });
 
-        socket.on("has-account", function(data){
+        socket.on('has-account', function(data){
            alert('you have an account');
         });
 
-        socket.on("account-created", function(data){
-            alert("account created");
+        socket.on('account-created', function(data){
+            alert('account created');
         });
 
         socket.on('login-success', function(data){
-            alert("logged in as " + data.email);
+            alert('logged in as ' + data.email);
         });
 
         socket.on('login-failure', function(data){
             alert('login failed for ' + data.email);
+        });
+
+        socket.on('must-be-logged-in', function(data){
+            alert('you must be logged in to do that')
+        });
+
+        socket.on('link-saved', function(data){
+           alert('the link was saved and its id is: ' + data.id)
         });
     </script>
 </head>
@@ -45,5 +61,12 @@
 <p>Password: <input type="text" id="login-password" /></p>
 <button id="login">Log In</button>
 
+<h2>Submit Link</h2>
+<p>Href:  <input type="text" id="link-href"></p>
+<p>Title:  <input type="text" id="link-title"></p>
+<button id="submit-link">Submit Link</button>
+
+<h2>Get Latest Links</h2>
+<button id="get-latest-links">Get Latest Links</button>
 </body>
 </html>
