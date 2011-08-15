@@ -6,12 +6,17 @@ async = require('async')
 uuid = require('node-uuid')
 request = require('request')
 jsdom = require('jsdom')
+htmlparser = require('htmlparser')
+
+_ = require('underscore')
 
 app = express.createServer()
 
 io = require('socket.io').listen(app)
 
 socketSessions = {}
+
+LINK_PROPS = ['title', 'href', 'email']
 
 updateLinkTitle = (socket, data) ->
   href = data.href
@@ -21,12 +26,19 @@ updateLinkTitle = (socket, data) ->
 
   request href, (error, response, body) ->
     console.log 'request complete -- have data for: ' + href
+    #console.log body
+    handler = new htmlparser.DefaultHandler (err, dom) ->
+      if err
+        console.log err
+      else
+        data.title = htmlparser.DomUtils.getElementsByTagName('title', dom)[0].children[0].data
+        redis.set 'links:' + id + ':title', data.title, (err, res) ->
+          socket.emit 'link-title-updated', data
+          console.log 'link title updated'
+          console.log data
 
-    jsdom.env body, [],  (errors, window) ->
-      data.title =  window.document.getElementsByTagName('title')[0].innerHTML
-
-      redis.set 'links:' + id + ':title', data.title, (err, res) ->
-        socket.emit 'link-title-updated', data
+    parser = new htmlparser.Parser(handler)
+    parser.parseComplete body
 
 storeLink = (link, handler) ->
   redis.mset 'links:' + link.id + ':title', link.title, 'links:' + link.id + ':href', link.href, 'links:' + link.id + ':email', link.email, handler
@@ -93,11 +105,35 @@ handleSubmitLink = (socket, data) ->
 
   socket.emit 'link-saved', link
 
+loadLinks = (socket, ids) ->
+  propsToGet = _(ids).chain().map((id) -> _.map(LINK_PROPS, (prop) -> 'links:' + id + ':' + prop)).flatten().value()
+  redis.mget propsToGet, (err, res) ->
+    values = {}
+    _.zip(propsToGet, res).forEach (pair) ->
+      values[pair[0]] = pair[1]
+
+    links = []
+
+    ids.forEach (id) ->
+      link = {}
+      link.id = id
+
+      LINK_PROPS.forEach (prop) ->
+        link[prop] = values['links:' + id + ':' + prop]
+
+      links.push(link)
+
+    console.log links
+    
+    socket.emit 'get-latest-links-complete', links
+
 handleGetLatestLinks = (socket, data) ->
   console.log 'get latest links'
 
   redis.lrange 'links', 0, 10, (err, res) ->
     console.log res
+
+    links = loadLinks(socket, res)
 
 io.sockets.on 'connection', (socket) ->
   socketSessions[socket] = {}
