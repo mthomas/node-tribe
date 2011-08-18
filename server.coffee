@@ -7,10 +7,18 @@ uuid = require('node-uuid')
 request = require('request')
 jsdom = require('jsdom')
 htmlparser = require('htmlparser')
+coffee4clients = require 'coffee4clients'
 
 _ = require('underscore')
 
 app = express.createServer()
+
+coffee4clients.createInstance {
+    server: app # your express server (required)
+    publicPath: __dirname + '/public' # the full path to your server root (required)
+    missingAction: false # the action to forward to when a file is not found
+    cache: false # whether the responses should be cached
+}
 
 io = require('socket.io').listen(app)
 

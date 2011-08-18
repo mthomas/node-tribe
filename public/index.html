@@ -4,74 +4,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <script src="/underscore-min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-
-    <script>
-
-
-        $(function(){
-            var socket = io.connect();
-            var linkTemplate = _.template($('#link-template').html());
-
-            $('#create-account').click(function(){
-                socket.emit('create-account', {email: $('#email').val(), password: $('#password').val()});
-            });
-
-            $('#login').click(function(){
-                socket.emit('login', {email: $('#login-email').val(), password: $('#login-password').val()});
-            });
-
-            $('#submit-link').click(function(){
-                socket.emit('submit-link', {href: $('#link-href').val(), title: $('#link-title').val()});
-            });
-
-            socket.on('has-account', function(data){
-               alert('you have an account');
-            });
-
-            socket.on('account-created', function(data){
-                alert('account created');
-            });
-
-            socket.on('login-success', function(data){
-                //alert('logged in as ' + data.email);
-                socket.emit('get-latest-links', {});
-            });
-
-            socket.on('login-failure', function(data){
-                alert('login failed for ' + data.email);
-            });
-
-            socket.on('must-be-logged-in', function(data){
-                alert('you must be logged in to do that')
-            });
-
-            socket.on('link-saved', function(data){
-               //alert('the link was saved and its id is: ' + data.id);
-               // pass -- we will get the new-link event soon enough
-            });
-
-            socket.on('get-latest-links-complete', function(links){
-                var linkHtml = _.map(links, function(link){
-                    return linkTemplate({'link': link});
-                });
-
-                $("#links").html(linkHtml.join(''));
-            });
-
-            socket.on('new-link', function(link){
-                var linkHtml = linkTemplate({'link': link});
-                var oldHtml = $("#links").html();
-                $("#links").html(linkHtml + oldHtml);
-            });
-
-            socket.on('link-title-updated', function(link){
-               $("#link-" + link.id + " .link-title").html(link.title);
-            });
-        });
-
-
-    </script>
-
+    <script src="/tribe.io.client.coffee?js"></script>
 
     <script type="text/html" id="link-template">
         <div class="link" id="link-<%=link.id%>"><a href="<%=link.href %>"><span class="link-title"><%=link.title%></span></a> by <%=link.email%></div>
