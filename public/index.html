@@ -1,32 +1,65 @@
-<html>
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
     <title>Welcome!</title>
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/style.css">
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-    <script src="/underscore-min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/underscore-min.js"></script>
     <script src="/tribe.io.client.coffee?js"></script>
 
-    <script type="text/html" id="link-template">
-        <div class="link" id="link-<%=link.id%>"><a href="<%=link.href %>"><span class="link-title"><%=link.title%></span></a> by <%=link.email%></div>
+    <script>
+        $(function(){
+           var page = new WelcomePage();
+        });
     </script>
+    
 </head>
 <body>
-<h2>Create Account</h2>
-<p>Email: <input type="text" id="email" /></p>
-<p>Password: <input type="text" id="password" /></p>
-<button id="create-account">Create Account</button>
+
+<div class="home">
+  <div class="content">
+
+    <h1><span>tribe.io</span></h1>
+
+    <div class="submit">
+        <div class="start">
+            <p>to start your own tribe all you need to do
+              <br/>is <label for="tribe-name">name it</label> <input id="tribe-name" size="20" type="text" /> <input id="create-tribe" type="submit" value="and go" />
+            </p>
+        </div>
+    </div>
+
+    <div class="what">
+      <h3>What's a tribe?</h3>
+
+      <p>A tribe is a group of people who share and discuss links. It's you and your friends and coworkers.</p>
+
+      <p>It's like your own personal Reddit or a group blog. But it's better.</p>
+
+      <p>It's free and easy to set up. No users, no passwords, just links.</p>
+    </div>
+  </div>
+</div>
 
 
-<h2>Log In</h2>
-<p>Email: <input type="text" id="login-email" /></p>
-<p>Password: <input type="text" id="login-password" /></p>
-<button id="login">Log In</button>
+<!--prompt IE users less than 9 to install chrome frame :) -->
+<!--[if lt IE 9 ]>
+    <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+    <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+<![endif]-->
 
-<h2>Submit Link</h2>
-<p>Href:  <input type="text" id="link-href"></p>
-<p>Title:  <input type="text" id="link-title"></p>
-<button id="submit-link">Submit Link</button>
-
-<div id="links"></div>
 </body>
 </html>

@@ -144,6 +144,10 @@ handleGetLatestLinks = (socket, data) ->
 
     loadLinks(socket, res)
 
+handleCreateTribe = (socket, data) ->
+  console.log 'should we do anything to create a tribe: ' + data.name
+  socket.emit 'create-tribe-complete', data
+  
 io.sockets.on 'connection', (socket) ->
   socketSessions[socket] = {}
 
@@ -162,6 +166,9 @@ io.sockets.on 'connection', (socket) ->
   socket.on 'get-latest-links', (data) ->
     handleGetLatestLinks socket, data
 
+  socket.on 'create-tribe', (data) ->
+    handleCreateTribe socket, data
+    
 app.configure () ->
   app.use express.bodyParser()
   app.use express.methodOverride()

@@ -60,6 +60,20 @@ class Homepage
     @socket.on 'link-title-updated', (link) ->
       $("#link-" + link.id + " .link-title").html(link.title)
 
-$ () ->
-  console.log 'init'
-  homepage = new Homepage
+window.Homepage = Homepage
+
+class WelcomePage
+  constructor: () ->
+    console.log 'welcome page constructor'
+    @socket = io.connect()
+
+    $('#create-tribe').click () =>
+      console.log 'create tribe called'
+      @socket.emit 'create-tribe', {name: $('#tribe-name').val()}
+
+    @socket.on 'create-tribe-complete', (data) =>
+      console.log 'create tribe complete'
+      location.href = '/tribe.html#' + data.name
+      
+window.WelcomePage = WelcomePage
+  
