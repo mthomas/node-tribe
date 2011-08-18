@@ -33,7 +33,7 @@ updateLinkTitle = (socket, data) ->
       else
         data.title = htmlparser.DomUtils.getElementsByTagName('title', dom)[0].children[0].data
         redis.set 'links:' + id + ':title', data.title, (err, res) ->
-          socket.emit 'link-title-updated', data
+          io.sockets.emit 'link-title-updated', data
           console.log 'link title updated'
           console.log data
 
@@ -104,7 +104,8 @@ handleSubmitLink = (socket, data) ->
        updateLinkTitle socket, link
 
   socket.emit 'link-saved', link
-
+  io.sockets.emit 'new-link', link
+  
 loadLinks = (socket, ids) ->
   propsToGet = _(ids).chain().map((id) -> _.map(LINK_PROPS, (prop) -> 'links:' + id + ':' + prop)).flatten().value()
   redis.mget propsToGet, (err, res) ->
@@ -133,7 +134,7 @@ handleGetLatestLinks = (socket, data) ->
   redis.lrange 'links', 0, 10, (err, res) ->
     console.log res
 
-    links = loadLinks(socket, res)
+    loadLinks(socket, res)
 
 io.sockets.on 'connection', (socket) ->
   socketSessions[socket] = {}
