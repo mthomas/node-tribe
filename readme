@@ -1,1 +1,9 @@
 Just a testbed for me to explore node.js.  The idea is that this is a "reddit" like link sharing site.
+
+Requirements:
+
+* node 4.10.x
+* redis
+* coffeescript
+
+
