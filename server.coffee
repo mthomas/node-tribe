@@ -8,8 +8,10 @@ request = require('request')
 jsdom = require('jsdom')
 htmlparser = require('htmlparser')
 coffee4clients = require 'coffee4clients'
-
 _ = require('underscore')
+
+TribeService = require('./lib/tribeservice').TribeService
+tribeService = new TribeService redis
 
 app = express.createServer()
 
@@ -145,8 +147,16 @@ handleGetLatestLinks = (socket, data) ->
     loadLinks(socket, res)
 
 handleCreateTribe = (socket, data) ->
-  console.log 'should we do anything to create a tribe: ' + data.name
-  socket.emit 'create-tribe-complete', data
+
+  handleCreateTribeSuccess = (tribe) ->
+    socket.emit 'create-tribe-complete', tribe
+
+  handleCreateTribeFailure = (message) ->
+    socket.emit 'create-tribe-failure', message
+
+  name = data.name
+
+  tribeService.createTribe name, handleCreateTribeSuccess, handleCreateTribeFailure
   
 io.sockets.on 'connection', (socket) ->
   socketSessions[socket] = {}

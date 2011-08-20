@@ -73,7 +73,11 @@ class WelcomePage
 
     @socket.on 'create-tribe-complete', (data) =>
       console.log 'create tribe complete'
-      location.href = '/tribe.html#' + data.name
+      location.href = '/tribe.html#' + data.id
+
+    @socket.on 'create-tribe-failure', (message) =>
+      $('#tribe-create-error').text(message).show()
+
       
 window.WelcomePage = WelcomePage
   

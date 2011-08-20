@@ -56,10 +56,6 @@ h1 a:hover {text-decoration:underline}
 .link p {margin: 12px 0;}
 .link .views {color:#948C75;}
 
-.submit {background: #948C75;padding: 12px; width: 700px;}
-.submit.has_errors {border: solid 3px #d00}
-.submit label {color: white;}
-.submit input[type=text] {width:530px;}
 
 .submit .errors {display: block; margin-left: 100px;}
 
@@ -81,13 +77,15 @@ h1 a:hover {text-decoration:underline}
 .home h1 span {font-size:32px; }
 .home p {margin: 12px 0;}
 
+.home .start {background: #948C75;padding: 12px; width: 700px;}
 .home .start {line-height: 32px;}
+.home .start p,
+.home .start input {color: #FFF}
 
 .home input {padding: 2px;}
 
 .home input[type=submit] {background:none; border: dotted 2px #99B2B7; cursor: pointer}
-.home input[type=text] {background:none; border: dotted 2px #99B2B7;}
+.home input[type=text] {background:none; border: dotted 2px #99B2B7; width: 530px;}
 
 .home .what {margin-top: 64px;}
 .home .what p {margin: 24px 0;}
-
